@@ -1,7 +1,6 @@
 var PORT = 28101;
 
 // --- Utility ---
-// var xor = require('bitwise-xor');
 var crypto = require('crypto');
 
 function cryptoUUID() {
@@ -122,10 +121,6 @@ function putItem(req, res) {
   // Done!
   res.sendStatus(200);
 }
-
-// var b1 = new Buffer([10, 10, 10]);
-// var b2 = new Buffer([20, 20, 20]);
-// console.log(xorBuffers([b1, b2]));
 
 app.all('/item', function(req, res){
   var method = req.method;
