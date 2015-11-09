@@ -8,6 +8,10 @@
     "url": "https://github.com/bhasa/server"
   },
   "dependencies": {
-    "express": "^4.13.3"
+    "bitwise-xor": "0.0.0",
+    "body-parser": "^1.14.1",
+    "express": "^4.13.3",
+    "sequelize": "^3.13.0",
+    "sqlite3": "^3.1.1"
   }
 }

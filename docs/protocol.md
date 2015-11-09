@@ -28,11 +28,11 @@ Hashes are pointers into this heap of articles.
 
 A **combined hash** is created by XORing "key-hashes" together. This is more easily seen with an example:
 
-    intfH = HASH( record.interface )
-    implH = HASH( record.impl )
-    intfH+implH = HASH( record.interface ) XOR HASH( record.impl )
+    hintf = HASH( record.interface )
+    himpl = HASH( record.impl )
+    hintf+himpl = HASH( record.interface ) XOR HASH( record.impl )
 
-This has the property that the order of keys does not matter. `intfH+implH` is the same as `implH+intfH`. 
+This has the property that the order of keys does not matter. `hintf+himpl` is the same as `himpl+hintf`. 
 
 The hash function we use is to calculate `SHA512` and then truncate to the first half of the output.
 
@@ -44,7 +44,7 @@ One important kind of article is the function **version**. A version is a snapsh
 
 Individual versions are immutable. Version history is append-only. The only way to modify a function is to publish a new version to the server.
 
-    GET /item/?impl=<hash>                 // Get the article whose "impl" hashes to <hash>
+    GET /item/?himpl=<hash>                 // Get the article whose "impl" hashes to <hash>
     PUT /item/                             // Publish a new version
 
 ## Version JSON
