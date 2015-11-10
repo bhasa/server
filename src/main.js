@@ -40,11 +40,18 @@ function displayHash(buf) {
 
 
 // --- Database ---
+var DEBUG = (process.platform === 'darwin');
 var Sequelize = require('sequelize');
-var sequelize = new Sequelize('sqlite', null, null, {
-  dialect: 'sqlite',
-  storage: 'testdata/test0.db',
-});
+var sequelize = null;
+if (DEBUG) {
+  sequelize = new Sequelize('sqlite', null, null, {
+      dialect: 'sqlite',
+      storage: 'testdata/test0.db',
+    })
+}
+else {
+  sequelize = new Sequelize(process.env.DATABASE_URL);
+}
 
 var Version = sequelize.define('Version', {
   uuid: Sequelize.UUID,
