@@ -5,6 +5,7 @@ if (process.env.PORT)
 
 // --- Utility ---
 var crypto = require('crypto');
+var fs = require('fs');
 
 function cryptoUUID() {
   var N = 128;
@@ -104,7 +105,7 @@ function getItem(req, res) {
       return;
     }
     
-    res.send(val);
+    res.type('json').send(val);
   })
 }
 
@@ -135,7 +136,7 @@ function putItem(req, res) {
   res.sendStatus(200);
 }
 
-app.all('api/item', function(req, res){
+app.all('/api/item', function(req, res){
   var method = req.method;
   if (req.query._method != null)
     method = req.query._method;
@@ -149,9 +150,10 @@ app.all('api/item', function(req, res){
 });
 
 // Website routing
-app.get('[^\n]+', function(req, res) {
+var websiteHTML = fs.readFileSync('website/index.html');
+app.get('/*', function(req, res) {
   // send along index.html
-  
+  res.type('html').send(websiteHTML);
 });
 
 sequelize.sync().then(function() {
