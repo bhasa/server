@@ -105,7 +105,7 @@ function getItem(req, res) {
       return;
     }
     
-    res.type('json').send(val);
+    res.append('Access-Control-Allow-Origin', '*').type('json').send(val);
   })
 }
 
@@ -128,7 +128,7 @@ function findGetItem(req, res) {
       return;
     }
 
-    res.type('json').send(val);
+    res.append('Access-Control-Allow-Origin', '*').type('json').send(val);
   })
 }
 
@@ -154,7 +154,7 @@ function putItem(req, res) {
   });
   
   // Done!
-  res.sendStatus(200);
+  res.append('Access-Control-Allow-Origin', '*').sendStatus(200);
 }
 
 app.all('/api/item', function(req, res){
