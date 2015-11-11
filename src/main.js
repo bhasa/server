@@ -139,6 +139,44 @@ function findGetItem(req, res) {
   })
 }
 
+function doSearch(req, res) {
+  if (!req.query.hasOwnProperty('q')) {
+    res.status(400).send('No q= query parameter specified');
+    return;
+  }
+  
+  Version.findAll({
+    where: {
+      'title': {
+        '$like': '%' + req.query['q'] + '%',
+      }
+    },
+    order: [
+      ['id', 'DESC'],
+    ],
+  }).then(function(vals) {
+    if (vals == null) {
+      res.sendStatus(404);
+      return;
+    }
+    
+    var outputs = [];
+    vals.forEach(function(val) {
+      // Documentation of sequelize is godawful
+      // I presume this is the correct way of doing things???
+      val = val.dataValues;
+      
+      console.log(val);
+      var json = JSON.parse(val.json);
+      console.log(json);
+      outputs.push(json);
+    })
+    res.type('json').send({
+      results: outputs,
+    });
+  })
+}
+
 function stringIsBad(str) {
   return (str == null || (typeof str) != 'string' || str == '');
 }
@@ -232,6 +270,17 @@ app.all('/api/find-latest', function(req, res){
 
   if (method === 'GET' || method === 'HEAD')
     findGetItem(req, res);
+  else
+    res.sendStatus(405);
+});
+
+app.all('/api/search', function(req, res){
+  var method = req.method;
+  if (req.query._method != null)
+    method = req.query._method;
+
+  if (method === 'GET' || method === 'HEAD')
+    doSearch(req, res);
   else
     res.sendStatus(405);
 });
