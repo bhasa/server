@@ -167,6 +167,12 @@ function putItemJSON(newUUID, req, res) {
     return;
   }
   
+  var title = obj.title;
+  if (stringIsBad(title)) {
+    res.sendStatus(400);
+    return;
+  }
+  
   var himpl = hashKey(obj, 'impl');
   var hinterface = hashKey(obj, 'interface');
   var htotal = combineHashes([ himpl, hinterface ]);
@@ -176,6 +182,7 @@ function putItemJSON(newUUID, req, res) {
   Version.create({
     uuid: uuid,
     htotal: displayHash(htotal),
+    title: title,
     created: Date.now() / 1000,
     json: jsonStr,
   });
