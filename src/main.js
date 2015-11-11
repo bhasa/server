@@ -131,8 +131,11 @@ function findGetItem(req, res) {
       res.sendStatus(404);
       return;
     }
-
-    res.type('json').send(val);
+    
+    var json = JSON.parse(val.json);
+    res.type('json').send({
+      content: json,
+    });
   })
 }
 
@@ -198,6 +201,7 @@ function putItemJSON(newUUID, req, res) {
 }
 
 app.all('/api/create-from-template', function(req, res) {
+  console.log(req);
   var method = req.method;
   if (req.query._method != null)
     method = req.query._method;
