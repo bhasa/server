@@ -83,6 +83,10 @@ var express = require('express');
 var bodyParser = require('body-parser')
 var app = express();
 app.use(bodyParser.json());
+app.use(function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  next();
+});
 
 function getItem(req, res) {
   if (!req.query.hasOwnProperty('htotal')) {
@@ -105,7 +109,7 @@ function getItem(req, res) {
       return;
     }
     
-    res.append('Access-Control-Allow-Origin', '*').type('json').send(val);
+    res.type('json').send(val);
   })
 }
 
@@ -128,7 +132,7 @@ function findGetItem(req, res) {
       return;
     }
 
-    res.append('Access-Control-Allow-Origin', '*').type('json').send(val);
+    res.type('json').send(val);
   })
 }
 
@@ -154,7 +158,7 @@ function putItem(req, res) {
   });
   
   // Done!
-  res.append('Access-Control-Allow-Origin', '*').sendStatus(200);
+  res.sendStatus(200);
 }
 
 app.all('/api/item', function(req, res){
@@ -191,8 +195,7 @@ else {
 // Website routing
 var websiteHTML = fs.readFileSync('website/index.html');
 app.get('/*', function(req, res) {
-  // send along index.html
-  res.type('html').append('Access-Control-Allow-Origin', 'https://bhasa.herokuapp.com').send(websiteHTML);
+  res.type('html').send(websiteHTML);
 });
 
 sequelize.sync().then(function() {
