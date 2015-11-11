@@ -1,7 +1,7 @@
 import requests
 
 def main():
-  r = requests.post('http://127.0.0.1:28101/item?_method=PUT', json={
+  r = requests.post('http://127.0.0.1:28101/item?_method=POST', json={
     'aaa': 'bbb',
   })
   sc = r.status_code

@@ -136,11 +136,34 @@ function findGetItem(req, res) {
   })
 }
 
-
+function stringIsBad(str) {
+  return (str == null || (typeof str) != 'string' || str == '');
+}
 function putItem(req, res) {
+  return putItemJSON(false, req, res);
+}
+function putItemJSON(newUUID, req, res) {
   var obj = req.body;
   if (!validateJSON(obj)) {
     res.sendStatus(400);
+    return;
+  }
+  
+  var uuid;
+  if (newUUID) {
+    uuid = cryptoUUID();
+  }
+  else {
+    uuid = obj.uuid;
+    if (stringIsGood(uuid)) {
+      res.sendStatus(400);
+      return;
+    }
+    // TODO: ensure that uuid exists already
+  }
+  
+  if (stringIsGood(uuid)) {
+    res.sendStatus(500);
     return;
   }
   
@@ -151,7 +174,7 @@ function putItem(req, res) {
   var jsonStr = JSON.stringify(obj);
   
   Version.create({
-    uuid: cryptoUUID(),
+    uuid: uuid,
     htotal: displayHash(htotal),
     created: Date.now() / 1000,
     json: jsonStr,
@@ -161,6 +184,17 @@ function putItem(req, res) {
   res.sendStatus(200);
 }
 
+app.all('/api/create-from-template', function(req, res) {
+  var method = req.method;
+  if (req.query._method != null)
+    method = req.query._method;
+
+  if (method == 'POST')
+    putItemJSON(true, req, res);
+  else
+    res.sendStatus(405);
+})
+
 app.all('/api/item', function(req, res){
   var method = req.method;
   if (req.query._method != null)
@@ -168,7 +202,7 @@ app.all('/api/item', function(req, res){
   
   if (method === 'GET' || method === 'HEAD')
     getItem(req, res);    
-  else if (method === 'PUT')
+  else if (method === 'POST')
     putItem(req, res);
   else
     res.sendStatus(405);
@@ -195,6 +229,7 @@ else {
 // Website routing
 var websiteHTML = fs.readFileSync('website/index.html');
 app.get('/*', function(req, res) {
+  if (DEBUG) websiteHTML = fs.readFileSync('website/index.html');
   res.type('html').send(websiteHTML);
 });
 

@@ -45,7 +45,7 @@ One important kind of article is the function **version**. A version is a snapsh
 Individual versions are immutable. Version history is append-only. The only way to modify a function is to publish a new version to the server.
 
     GET /item/?himpl=<hash>                 // Get the article whose "impl" hashes to <hash>
-    PUT /item/                             // Publish a new version
+    POST /item/                             // Publish a new version
 
 ## Version JSON
 
