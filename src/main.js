@@ -61,7 +61,7 @@ else {
 }
 
 var Version = sequelize.define('Version', {
-  uuid: Sequelize.UUID,
+  uuid: Sequelize.STRING,
   title: Sequelize.STRING,
   htotal: Sequelize.STRING,
   created: Sequelize.DOUBLE,
