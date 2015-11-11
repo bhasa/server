@@ -135,7 +135,7 @@ function putItem(req, res) {
   res.sendStatus(200);
 }
 
-app.all('/item', function(req, res){
+app.all('api/item', function(req, res){
   var method = req.method;
   if (req.query._method != null)
     method = req.query._method;
@@ -146,6 +146,12 @@ app.all('/item', function(req, res){
     putItem(req, res);
   else
     res.sendStatus(405);
+});
+
+// Website routing
+app.get('[^\n]+', function(req, res) {
+  // send along index.html
+  
 });
 
 sequelize.sync().then(function() {
