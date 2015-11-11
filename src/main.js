@@ -1,4 +1,7 @@
-var PORT = 80; //28101;
+var PORT = 28101;
+if (process.env.PORT)
+  PORT = process.env.PORT;
+
 
 // --- Utility ---
 var crypto = require('crypto');
