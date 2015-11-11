@@ -175,7 +175,7 @@ app.all('/api/find-latest', function(req, res){
     method = req.query._method;
 
   if (method === 'GET' || method === 'HEAD')
-    getItem(req, res);
+    findGetItem(req, res);
   else
     res.sendStatus(405);
 });
