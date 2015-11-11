@@ -155,14 +155,14 @@ function putItemJSON(newUUID, req, res) {
   }
   else {
     uuid = obj.uuid;
-    if (stringIsGood(uuid)) {
+    if (stringIsBad(uuid)) {
       res.sendStatus(400);
       return;
     }
     // TODO: ensure that uuid exists already
   }
   
-  if (stringIsGood(uuid)) {
+  if (stringIsBad(uuid)) {
     res.sendStatus(500);
     return;
   }
