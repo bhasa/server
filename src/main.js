@@ -27,7 +27,7 @@ function hashKey(obj, key) {
 function combineHashes(xs) {
   var res = [];
   var n = xs[0].length;
-  console.log(xs);
+  
   for (var i = 0; i < n; i++) {
     var octet = 0;
     for (var j = 0; j < xs.length; j++) {
@@ -35,7 +35,7 @@ function combineHashes(xs) {
     }
     res.push(octet);
   }
-  console.log(res);
+  
   return new Buffer(res);
 }
 function displayHash(buf) {
@@ -62,6 +62,7 @@ else {
 
 var Version = sequelize.define('Version', {
   uuid: Sequelize.UUID,
+  title: Sequelize.STRING,
   htotal: Sequelize.STRING,
   created: Sequelize.DOUBLE,
   json: Sequelize.TEXT,
@@ -83,8 +84,6 @@ var app = express();
 app.use(bodyParser.json());
 
 function getItem(req, res) {
-  console.log(req);
-  
   if (!req.query.hasOwnProperty('htotal')) {
     res.status(400).send('No htotal= query parameter specified');
     return;
@@ -109,6 +108,29 @@ function getItem(req, res) {
   })
 }
 
+function findGetItem(req, res) {
+  if (!req.query.hasOwnProperty('title')) {
+    res.status(400).send('No title= query parameter specified');
+    return;
+  }
+
+  Version.findOne({
+    where: {
+      'title': req.query['title'],
+    },
+    order: [
+      ['id', 'DESC'],
+    ],
+  }).then(function(val) {
+    if (val == null) {
+      res.sendStatus(404);
+      return;
+    }
+
+    res.type('json').send(val);
+  })
+}
+
 
 function putItem(req, res) {
   var obj = req.body;
@@ -119,8 +141,6 @@ function putItem(req, res) {
   
   var himpl = hashKey(obj, 'impl');
   var hinterface = hashKey(obj, 'interface');
-  console.log(himpl);
-  console.log(hinterface);
   var htotal = combineHashes([ himpl, hinterface ]);
   
   var jsonStr = JSON.stringify(obj);
@@ -149,11 +169,29 @@ app.all('/api/item', function(req, res){
     res.sendStatus(405);
 });
 
+app.all('/api/find-latest', function(req, res){
+  var method = req.method;
+  if (req.query._method != null)
+    method = req.query._method;
+
+  if (method === 'GET' || method === 'HEAD')
+    getItem(req, res);
+  else
+    res.sendStatus(405);
+});
+
+if (DEBUG) {
+  app.use(express.static('../website'));
+}
+else {
+  app.use(express.static('website'));
+}
+
 // Website routing
 var websiteHTML = fs.readFileSync('website/index.html');
 app.get('/*', function(req, res) {
   // send along index.html
-  res.type('html').send(websiteHTML);
+  res.type('html').append('Access-Control-Allow-Origin', 'https://bhasa.herokuapp.com').send(websiteHTML);
 });
 
 sequelize.sync().then(function() {
