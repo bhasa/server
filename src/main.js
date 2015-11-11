@@ -211,6 +211,7 @@ function putItemJSON(newUUID, req, res) {
     res.sendStatus(500);
     return;
   }
+  obj.uuid = uuid;
   
   var title = obj.title;
   if (stringIsBad(title)) {
