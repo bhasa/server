@@ -144,7 +144,9 @@ function putItem(req, res) {
 }
 function putItemJSON(newUUID, req, res) {
   var obj = req.body;
+  console.log(obj);
   if (!validateJSON(obj)) {
+    console.log("STRIKE ONE");
     res.sendStatus(400);
     return;
   }
@@ -156,6 +158,7 @@ function putItemJSON(newUUID, req, res) {
   else {
     uuid = obj.uuid;
     if (stringIsBad(uuid)) {
+      console.log("STRIKE TWO");
       res.sendStatus(400);
       return;
     }
@@ -163,16 +166,19 @@ function putItemJSON(newUUID, req, res) {
   }
   
   if (stringIsBad(uuid)) {
+    console.log("STRIKE TWO AND A HALF");
     res.sendStatus(500);
     return;
   }
   
   var title = obj.title;
   if (stringIsBad(title)) {
+    console.log("STRIKE THREE");
     res.sendStatus(400);
     return;
   }
   
+  console.log("READY");
   var himpl = hashKey(obj, 'impl');
   var hinterface = hashKey(obj, 'interface');
   var htotal = combineHashes([ himpl, hinterface ]);
